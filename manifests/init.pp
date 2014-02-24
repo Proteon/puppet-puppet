@@ -17,7 +17,18 @@ class puppet (
   $ssldir  = $puppet::params::ssldir,
   $rundir  = $puppet::params::rundir,
   $ensure  = present) inherits puppet::params {
-  package { 'puppet': ensure => $ensure, }
+    
+  apt::source { 'puppetlabs':
+    location   => 'http://apt.puppetlabs.com',
+    repos      => 'main',
+    key        => '4BD6EC30',
+    key_server => 'pgp.mit.edu',
+  } ->
+  
+  package { 'puppet':
+    ensure  => $ensure,
+    require => Apt::Source['puppetlabs'],
+  }
 
   Ini_setting {
     path    => "${confdir}/puppet.conf",
