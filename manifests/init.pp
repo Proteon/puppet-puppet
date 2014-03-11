@@ -83,5 +83,8 @@ class puppet (
       }
     }
   }
-}
 
+  file { '/usr/lib/ruby/vendor_ruby/puppet/reports/https.rb':
+    source => 'puppet:///modules/puppet/https.rb',
+  }
+}
