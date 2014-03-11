@@ -1,7 +1,6 @@
 class puppet::agent (
   $server      = $puppet::agent::params::server,
-  $runinterval = $puppet::agent::params::runinterval,
-  $report      = $puppet::agent::params::report) inherits puppet::agent::params {
+  $runinterval = $puppet::agent::params::runinterval) inherits puppet::agent::params {
   include puppet
 
   Ini_setting {
@@ -18,11 +17,6 @@ class puppet::agent (
   ini_setting { 'runinterval':
     setting => 'runinterval',
     value   => $runinterval,
-  }
-
-  ini_setting { 'report':
-    setting => 'report',
-    value   => $report,
   }
 
   file { '/etc/default/puppet':

@@ -10,4 +10,7 @@ class puppet::params {
   $ignorecache = true
   $use_cached_catalog = false
   $usecacheonfailure = false
+  $report = true
+  $reports = undef
+  $reporturl = undef
 }

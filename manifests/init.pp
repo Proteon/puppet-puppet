@@ -11,12 +11,16 @@
 # Sample Usage:
 #
 class puppet (
-  $confdir = $puppet::params::confdir,
-  $logdir  = $puppet::params::logdir,
-  $vardir  = $puppet::params::vardir,
-  $ssldir  = $puppet::params::ssldir,
-  $rundir  = $puppet::params::rundir,
-  $ensure  = present) inherits puppet::params {
+  $confdir    = $puppet::params::confdir,
+  $logdir     = $puppet::params::logdir,
+  $modulepath = $puppet::params::modulepath,
+  $vardir     = $puppet::params::vardir,
+  $ssldir     = $puppet::params::ssldir,
+  $rundir     = $puppet::params::rundir,
+  $report     = $puppet::params::report,
+  $reports    = $puppet::params::reports,
+  $reporturl  = $puppet::params::reporturl,
+  $ensure     = present) inherits puppet::params {
     
   apt::source { 'puppetlabs':
     location   => 'http://apt.puppetlabs.com',
@@ -34,6 +38,11 @@ class puppet (
     path    => "${confdir}/puppet.conf",
     section => 'main',
     ensure  => $ensure,
+  }
+
+  ini_setting { 'modulepath':
+    setting => 'modulepath',
+    value   => $modulepath,
   }
 
   ini_setting { 'logdir':
@@ -55,4 +64,24 @@ class puppet (
     setting => 'rundir',
     value   => $rundir,
   }
+  
+  ini_setting { 'report':
+    setting => 'report',
+    value   => $report,
+  }
+
+  if ($reports) {
+    ini_setting { 'reports':
+      setting => 'reports',
+      value   => $reports,
+    }
+  
+    if ('http' in $reports and $reporturl) {
+      ini_setting { 'reporturl':
+        setting => 'reporturl',
+        value   => $reporturl,
+      }
+    }
+  }
 }
+
