@@ -5,11 +5,11 @@ class puppet::master (
   $autosign                 = $puppet::master::params::autosign,
   $external_nodes           = $puppet::master::params::external_nodes,
   $node_terminus            = $puppet::master::params::node_terminus,
-  $modulepath               = $puppet::master::params::modulepath,
+  $modulepath               = undef, 
   $factpath                 = $puppet::master::params::factpath,
   $templatedir              = $puppet::master::params::templatedir,
-  $reports                  = $puppet::master::params::reports,
-  $reporturl                = $puppet::master::params::reporturl,) inherits puppet::master::params {
+  $reports                  = undef,
+  $reporturl                = undef) inherits puppet::master::params {
   include puppet
 
   package { 'puppetmaster': ensure => $puppet::ensure, }
@@ -40,11 +40,6 @@ class puppet::master (
     value   => $autosign,
   }
 
-  ini_setting { 'modulepath':
-    setting => 'modulepath',
-    value   => $modulepath,
-  }
-
   ini_setting { 'factpath':
     setting => 'factpath',
     value   => $factpath,
@@ -67,17 +62,15 @@ class puppet::master (
     }
   }
 
-  if ($reports != '') {
-    ini_setting { 'reports':
-      setting => 'reports',
-      value   => $reports,
-    }
+  if $modulepath {
+    notify { 'Deprecation notice: puppet::master::modulepath is deprecated, use puppet::modulepath instead': }
+  }
 
-    if ('http' in $reports and $reporturl != '') {
-      ini_setting { 'reporturl':
-        setting => 'reporturl',
-        value   => $reporturl,
-      }
-    }
+  if $reports {
+    notify { 'Deprecation notice: puppet::master::reports is deprecated, use puppet::reports instead': }
+  }
+
+  if $reporturl {
+    notify { 'Deprecation notice: puppet::master::reporturl is deprecated, use puppet::reporturl instead': }
   }
 }
