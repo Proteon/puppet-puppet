@@ -7,4 +7,5 @@ class puppet::master::params {
   $node_terminus = 'exec'
   $factpath = '$vardir/lib/facter'
   $templatedir = '$confdir/templates'
+  $webserver = 'webrick'
 }

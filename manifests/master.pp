@@ -9,10 +9,9 @@ class puppet::master (
   $factpath                 = $puppet::master::params::factpath,
   $templatedir              = $puppet::master::params::templatedir,
   $reports                  = undef,
-  $reporturl                = undef) inherits puppet::master::params {
+  $reporturl                = undef,
+  $webserver                = $puppet::master::params::webserver) inherits puppet::master::params {
   include puppet
-
-  package { 'puppetmaster': ensure => $puppet::ensure, }
 
   Ini_setting {
     path    => "${puppet::confdir}/puppet.conf",
@@ -23,16 +22,6 @@ class puppet::master (
   ini_setting { 'bindaddress':
     setting => 'bindaddress',
     value   => $bindaddress,
-  }
-
-  ini_setting { 'ssl_client_header':
-    setting => 'ssl_client_header',
-    value   => $ssl_client_header,
-  }
-
-  ini_setting { 'ssl_client_verify_header':
-    setting => 'ssl_client_verify_header',
-    value   => $ssl_client_verify_header,
   }
 
   ini_setting { 'autosign':
@@ -73,4 +62,6 @@ class puppet::master (
   if $reporturl {
     notify { 'Deprecation notice: puppet::master::reporturl is deprecated, use puppet::reporturl instead': }
   }
+
+  class { "puppet::master::webserver::${webserver}": }
 }
