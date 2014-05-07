@@ -14,7 +14,7 @@ class puppet::master::webserver::unicorn (
     }
 
     ::nginx::site { "${::fqdn}_8140":
-        listen_port      => '[::]:8140',
+        listen_port      => '*:8140',
         listen_options   => 'default_server ssl',
         default_location => false,
     }
@@ -71,8 +71,8 @@ ssl_verify_client optional;
 #    }
 
     exec { 'install-puppet-gem':
-        command => "/usr/bin/gem install puppet --version ${::puppetversion}",
-        unless  => "/usr/bin/gem list | grep -c 'puppet (${::puppetversion})'",
+        command => "/usr/bin/gem install puppet --version ${::puppetversion} --no-ri --no-rdoc",
+        unless  => "/usr/bin/gem list | grep 'puppet (' |grep ${::puppetversion}",
         require => Package['rubygems'],
     }
 
