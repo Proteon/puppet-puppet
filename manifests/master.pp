@@ -13,6 +13,31 @@ class puppet::master (
   $webserver                = $puppet::master::params::webserver) inherits puppet::master::params {
   include puppet
 
+  $ensure_3_6_0 = versioncmp($::puppetversion, '3.5.9') ? {
+    '0'       => present,
+    '-1'      => present,
+    '1'       => absent,
+    default   => present,
+  }
+
+  if(versioncmp($::puppetversion, '3.5.9') > 0) {
+    file { ["${puppet::confdir}/environments",
+            "${puppet::confdir}/environments/production", 
+            "${puppet::confdir}/environments/production/manifests",
+            "${puppet::confdir}/environments/production/modules"
+            ]:
+        ensure => directory,
+    }
+    ini_setting { 'master_environmentpath':
+      setting => 'environmentpath',
+      value   => '$confdir/environments',
+    }
+    ini_setting { 'master_modulepath':
+      setting => 'modulepath',
+      ensure  => absent,
+    }
+  }
+
   Ini_setting {
     path    => "${puppet::confdir}/puppet.conf",
     section => 'master',
@@ -37,6 +62,7 @@ class puppet::master (
   ini_setting { 'templatedir':
     setting => 'templatedir',
     value   => $templatedir,
+    ensure  => $ensure_3_6_0,
   }
 
   if ($external_nodes != '') {

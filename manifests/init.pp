@@ -34,6 +34,13 @@ class puppet (
     require => Apt::Source['puppetlabs'],
   }
 
+  $ensure_3_6_0 = versioncmp($::puppetversion, '3.5.9') ? {
+    '0'       => present,
+    '-1'      => present,
+    '1'       => absent,
+    default => present,
+  }
+
   Ini_setting {
     path    => "${confdir}/puppet.conf",
     section => 'main',
@@ -43,8 +50,9 @@ class puppet (
   ini_setting { 'modulepath':
     setting => 'modulepath',
     value   => $modulepath,
+    ensure  => $ensure_3_6_0
   }
-
+  
   ini_setting { 'logdir':
     setting => 'logdir',
     value   => $logdir,
