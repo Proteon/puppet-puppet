@@ -1,9 +1,9 @@
 # Managed by puppet
 # Puppet-Dashboard logs:
-<%= log_dir %>*.log {
+<%= @log_dir %>*.log {
   daily
   missingok
-  create <%= log_mode %> <%= log_user %> <%= log_group %>
+  create <%= @log_mode %> <%= @log_user %> <%= @log_group %>
   rotate 14
   compress
   notifempty
