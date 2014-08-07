@@ -59,7 +59,7 @@ class puppet::master (
     value   => $factpath,
   }
 
-  ini_setting { 'templatedir':
+  ini_setting { 'master_templatedir':
     setting => 'templatedir',
     value   => $templatedir,
     ensure  => $ensure_3_6_0,

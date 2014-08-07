@@ -52,7 +52,13 @@ class puppet (
     value   => $modulepath,
     ensure  => $ensure_3_6_0
   }
-  
+
+  ini_setting { 'templatedir':
+    setting => "templatedir",
+    value   => '$confdir/templates',
+    ensure  => $ensure_3_6_0,
+  }
+
   ini_setting { 'logdir':
     setting => 'logdir',
     value   => $logdir,
