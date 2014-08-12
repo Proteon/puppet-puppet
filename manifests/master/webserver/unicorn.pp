@@ -9,10 +9,6 @@ class puppet::master::webserver::unicorn (
         require => Apt::Source['puppetlabs']
     }
 
-    if (!defined(Package['rubygems'])) {
-        package { 'rubygems': ensure => installed, }
-    }
-
     ::nginx::site { "${::fqdn}_8140":
         listen_port      => '*:8140',
         listen_options   => 'default_server ssl',
@@ -45,35 +41,10 @@ ssl_verify_client optional;
 " 
     }
 
-
-#    ::nginx::server::location { 'default':
-#    server           => "${::fqdn}_8140",
-#    location         => '/',
-#    proxy_pass       => 'http://unix:/var/run/puppet/puppetmaster_unicorn.sock',
-#    proxy_redirect   => 'off',
-#    proxy_set_header => [
-#    { 'Host'            => '$host' },
-#    { 'X-Real-IP'       => '$remote_addr' },
-#    { 'X-Forwarded-For' => '$proxy_add_x_forwarded_for' },
-#    { 'X-Client-Verify' => '$ssl_client_verify' },
-#    { 'X-Client-DN'     => '$ssl_client_s_dn' },
-#    { 'X-SSL-Issuer'    => '$ssl_client_i_dn' }
-#    ]
-#    }
-
-#    ::nginx::server::ssl { "${::fqdn}_8140":
-#        server                 => "${::fqdn}_8140",
-#        ssl_certificate        => "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
-#        ssl_certificate_key    => "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
-#        ssl_client_certificate => '/var/lib/puppet/ssl/ca/ca_crt.pem',
-#        ssl_ciphers            => 'SSLv2:-LOW:-EXPORT:RC4+RSA',
-#        ssl_verify_client      => 'optional',
-#    }
-
     exec { 'install-puppet-gem':
         command => "/usr/bin/gem install puppet --version ${::puppetversion} --no-ri --no-rdoc",
         unless  => "/usr/bin/gem list | grep 'puppet (' |grep ${::puppetversion}",
-        require => Package['rubygems'],
+    	require => Unicorn::Instance['puppetmaster']
     }
 
     ::unicorn::instance { 'puppetmaster':
