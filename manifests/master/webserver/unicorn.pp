@@ -2,7 +2,9 @@ class puppet::master::webserver::unicorn (
     $worker_processes  = 8,
     $working_directory = '/usr/share/puppet/ext/rack/',
     $listen            = '\'/var/run/puppet/puppetmaster_unicorn.sock\', :backlog => 512',
-    $pid               = '/var/run/puppet/puppetmaster_unicorn.pid') {
+    $pid               = '/var/run/puppet/puppetmaster_unicorn.pid',
+    $nginx_log_format  = 'main',
+) {
 
     package { 'puppetmaster':
         ensure  => 'absent',
@@ -12,6 +14,7 @@ class puppet::master::webserver::unicorn (
     ::nginx::site { "${::fqdn}_8140":
         listen_port      => '*:8140',
         listen_options   => 'default_server ssl',
+	log_format       => $nginx_log_format,
         default_location => false,
     }
 
