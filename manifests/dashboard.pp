@@ -34,6 +34,13 @@ class puppet::dashboard (
     content => template('puppet/puppet-dashboard.logrotate.erb'),
   }
 
+  file { "${log_dir}":
+    ensure => 'directory',
+    owner   => 'root',
+    group   => 'www-data',
+    mode    => '0770',
+  }
+
   file { '/etc/default/puppet-dashboard':
     content => "START=yes
 DASHBOARD_HOME=/usr/share/puppet-dashboard
