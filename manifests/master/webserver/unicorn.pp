@@ -39,7 +39,7 @@ class puppet::master::webserver::unicorn (
 ssl_certificate /var/lib/puppet/ssl/certs/${::fqdn}.pem;
 ssl_certificate_key /var/lib/puppet/ssl/private_keys/${::fqdn}.pem;
 ssl_client_certificate /var/lib/puppet/ssl/ca/ca_crt.pem;
-ssl_ciphers SSLv2:-LOW:-EXPORT:RC4+RSA;
+ssl_ciphers \"EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 SSLv2:-LOW:-EXPORT:RC4+RSA\";
 ssl_verify_client optional;
 " 
     }
